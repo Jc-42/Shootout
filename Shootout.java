@@ -1,5 +1,4 @@
 import javax.imageio.ImageIO;
-import javax.print.attribute.standard.Media;
 import javax.swing.*;
 import javax.sound.sampled.*;
 
@@ -324,19 +323,10 @@ public class Shootout extends JPanel {
 
             for(int i = 0; i < playerTwo.health; i++){
                 g.setColor(new Color(255, 0, 0));
-                g.fillOval(window.getWidth() - (i * 30 + 30), 30, 20, 20);  
+                g.fillOval(window.getWidth() - (i * 30 + 50), 30, 20, 20);  
             }
 
-            if(playerOne.health <= 0){
-                g.setColor(Color.BLACK);
-                g.setFont(new Font("Arial", Font.PLAIN, 40));
-                g.drawString("Player 2 Wins\nPress Space To Restart", window.getWidth() / 2, window.getHeight() / 2);
-                gameOver = true;
-            }
-            else if(playerTwo.health <= 0){
-                g.setColor(Color.BLACK);
-                g.setFont(new Font("Arial", Font.PLAIN, 40));
-                g.drawString("Player 1 Wins\nPress Space To Restart", window.getWidth() / 2, window.getHeight() / 2);
+            if(playerOne.health <= 0 || playerTwo.health <= 0){
                 gameOver = true;
             }
         }
@@ -357,22 +347,28 @@ public class Shootout extends JPanel {
             playerOne.paint(g, window);
 
             if(playerOne.health <= 0){
-                g.setColor(Color.RED);
+                g.setColor(new Color(145, 150, 158, 100));
+                g.fillRect(0, 0, window.getWidth(), window.getHeight());
+                g.setColor(Color.WHITE);
                 g.setFont(new Font("Arial", Font.PLAIN, 40));
-                g.drawString("Player 2 Wins\nPress Space To Restart", window.getWidth() / 2 - 200, window.getHeight() / 2);
+                g.drawString("Player 2 Wins", window.getWidth() / 2 - 110, window.getHeight() / 2);
+                g.drawString("Press Space To Restart", window.getWidth() / 2 - 200, window.getHeight() / 2 + 60);
                 playerOne.setSprite("dead");
             }
             else if(playerTwo.health <= 0){
-                g.setColor(Color.BLUE);
+                g.setColor(new Color(145, 150, 158, 100));
+                g.fillRect(0, 0, window.getWidth(), window.getHeight());
+                g.setColor(Color.WHITE);
                 g.setFont(new Font("Arial", Font.PLAIN, 40));
-                g.drawString("Player 1 Wins\nPress Space To Restart", window.getWidth() / 2 - 200, window.getHeight() / 2);
+                g.drawString("Player 1 Wins", window.getWidth() / 2 - 110, window.getHeight() / 2);
+                g.drawString("Press Space To Restart", window.getWidth() / 2 - 200, window.getHeight() / 2 + 60);
                 playerTwo.setSprite("dead");
             }
 
             
         }
         
-        }
+    }
         
     }
 
