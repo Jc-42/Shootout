@@ -1,8 +1,8 @@
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
-import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -22,7 +22,7 @@ public class Player{
     public float shootCoolTimer;
     public boolean onCooldown = false;
     public int health;
-    private int lastJumpDirection;
+    private int lastWallJumpDirection; //Used to stop the player from wall jumping on the same wall over and over
     private Image left, right, slideLeft, slideRight, dead;
     private Image activeSprite;
     
@@ -44,7 +44,7 @@ public class Player{
         directionFacing = 1;
         hitBox = new double[]{x, y, sizeX, sizeY};
         health = 3;
-        lastJumpDirection = 0;
+        lastWallJumpDirection = 0;
         this.left = left;
         this.right = right;
         this.slideLeft = slideLeft;
@@ -52,11 +52,36 @@ public class Player{
         this.dead = dead;
         
 
-        file = new File("data\\usGunshot.wav");
-        audioStream = AudioSystem.getAudioInputStream(file);
-        shot = AudioSystem.getClip();
-        shot.open(audioStream);        
-        shot.setMicrosecondPosition(0);
+       
+
+        // file = new File(".//data//usGunshot.wav");
+        // audioStream = AudioSystem.getAudioInputStream(file);
+        // shot = AudioSystem.getClip();
+        // shot.open(audioStream);    
+        // shot.setMicrosecondPosition(0);
+        // shot.setMicrosecondPosition(0);
+        // shot.setMicrosecondPosition(0);
+        
+    }
+
+    
+
+    public void setFile(String soundFileName){
+        
+        try{
+            File file = new File(soundFileName);
+            AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+            shot = AudioSystem.getClip();
+            shot.open(sound);
+        }
+        catch(Exception e){
+
+        }
+    }
+
+    public void play(){
+        shot.setFramePosition(0);
+        shot.start();
     }
 
     public void paint(Graphics g, JFrame window){
@@ -103,7 +128,8 @@ public class Player{
         }
         hitBox[0]--;
 
-        
+        //Reset lastWallJumpDirection if the player hits the ground
+        if(onGround) lastWallJumpDirection = 0;
 
 
         //If not moving or trying to move in the opposite direction facing, slow the player down quickly
@@ -143,15 +169,15 @@ public class Player{
         //Jump
         if(keyUp){
             if(onGround) velocity[1] = -13;
-            else if(onLWall && !onRWall && keyRight && lastJumpDirection != 1) {
+            else if(onLWall && !onRWall && keyRight && lastWallJumpDirection != 1) {
                 velocity[1] = -13; 
-                lastJumpDirection = 1;
+                lastWallJumpDirection = 1;
             }
-            else if(!onLWall && onRWall && keyLeft && lastJumpDirection != -1){
-                 velocity[1] = -13; 
-                 lastJumpDirection = -1;
+            else if(!onLWall && onRWall && keyLeft && lastWallJumpDirection != -1){
+                velocity[1] = -13; 
+                lastWallJumpDirection = -1;
             }
-        } 
+        }
         
 
         //Gravity
@@ -203,10 +229,8 @@ public class Player{
         if(!onCooldown){
             if(keyDown){
                 
-                shot.setMicrosecondPosition(0);
-                shot.setMicrosecondPosition(0);
-                shot.setMicrosecondPosition(0);
-                shot.start();
+                setFile(".//data//usGunshot.wav");
+                play();
                 shoot(game);
                 onCooldown = true;
                 shootCoolTimer = shootCoolDown;
@@ -249,32 +273,25 @@ public class Player{
 
         if(num == 1){
             if(onLWall && !onRWall && !onGround){
-              game.p1Bullets.add(new Bullet(x, y + 40, 1));
+              game.p1Bullets.add(new Bullet(x - 10, y + 28, 1));
             }
             else if(!onLWall && onRWall && !onGround){
-              game.p1Bullets.add(new Bullet(x, y + 40, -1));
-            }
-            
-            else if(keyLeft && !keyRight){
-                game.p1Bullets.add(new Bullet(x, y + 40, directionFacing));
+              game.p1Bullets.add(new Bullet(x + 10, y + 28, -1));
             }
             else{
-                game.p1Bullets.add(new Bullet(x, y + 40, directionFacing));
+                game.p1Bullets.add(new Bullet(x - 10 * Math.signum(directionFacing), y + 28, directionFacing));
             }
 
         }
         else if(num == 2){
             if(onLWall && !onRWall && !onGround){
-                game.p2Bullets.add(new Bullet(x, y + 40, 1));
+                game.p2Bullets.add(new Bullet(x - 10, y + 28, 1));
             }
             else if(!onLWall && onRWall && !onGround){
-                game.p2Bullets.add(new Bullet(x, y + 40, -1));
-            }
-            else if(keyLeft && !keyRight){
-                game.p2Bullets.add(new Bullet(x, y + 40, directionFacing));
+                game.p2Bullets.add(new Bullet(x + 10, y + 28, -1));
             }
             else{
-                game.p2Bullets.add(new Bullet(x, y + 40, directionFacing));
+                game.p2Bullets.add(new Bullet(x - 10 * Math.signum(directionFacing), y + 28, directionFacing));
             }
         }
     }
