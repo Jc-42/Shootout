@@ -82,7 +82,6 @@ public class Shootout extends JPanel {
 		setBackground(new Color(200, 200, 200));
         //frameRate(60);
         screen = 1;
-        level = 1;//(int)random(1, 4);
 
         try {
 			p1Left = ImageIO.read(new File("data\\Sprites\\mexicanSpriteLeft.png"));
@@ -388,7 +387,7 @@ public class Shootout extends JPanel {
 
     public void start() throws UnsupportedAudioFileException, IOException, LineUnavailableException{
         screen = 1;
-        level = 1;//(int)random(1, 4);
+        level = (int)(Math.random() * 3) + 1;
 
         walls = new ArrayList<Wall>();
         walls.add(new Wall(0, window.getHeight() - 50, window.getWidth(), 50));
@@ -432,16 +431,15 @@ public class Shootout extends JPanel {
         }
         else if (level == 2){
             
-            //playerOne = new Player(offsetX + 90 * scaleX, offsetY + 40 * scaleX, 45 * scaleX, 90 * scaleY, 1);
-            //playerTwo = new Player(offsetX + 1830 * scaleX, offsetY + 40 * scaleY, 45 * scaleX, 90 * scaleY, 2);
-            
+            playerOne = new Player(offsetX + 90 * scaleX, offsetY + 50 * scaleX, 45 * scaleX, 90 * scaleY, 1, p1Left, p1Right, p1SlideLeft, p1SlideRight, p1Dead);
+            playerTwo = new Player(offsetX + 1830 * scaleX, offsetY + 50 * scaleX, 45 * scaleX, 90 * scaleY, 2, p2Left, p2Right, p2SlideLeft, p2SlideRight, p2Dead);
+
             walls.add(new Wall(offsetX + 0 * scaleX, offsetY + 150 * scaleY, 250 * scaleX, 15 * scaleY));
             walls.add(new Wall(offsetX + 250 * scaleX, offsetY + 150 * scaleY, 15 * scaleX, 250 * scaleY));
             walls.add(new Wall(offsetX + 115 * scaleX, offsetY + 399 * scaleY, 150 * scaleX, 15 * scaleY));
             walls.add(new Wall(offsetX + 115 * scaleX, offsetY + 294 * scaleY, 15 * scaleX, 120 * scaleY));
             walls.add(new Wall(offsetX + 115 * scaleX, offsetY + 510 * scaleY, 150 * scaleX, 15 * scaleY));
             walls.add(new Wall(offsetX + 115 * scaleX, offsetY + 510 * scaleY, 15 * scaleX, 390 * scaleY));
-            walls.add(new Wall(offsetX + 0 * scaleX, offsetY + 1000 * scaleY, 1920 * scaleX, 100 * scaleY));
             walls.add(new Wall(offsetX + 365 * scaleX, offsetY + 0 * scaleY, 15 * scaleX, 415 * scaleY));
             walls.add(new Wall(offsetX + 115 * scaleX, offsetY + 885 * scaleY, 265 * scaleX, 15 * scaleY));
             walls.add(new Wall(offsetX + 115 * scaleX, offsetY + 700 * scaleY, 150 * scaleX, 15 * scaleY));
@@ -475,49 +473,49 @@ public class Shootout extends JPanel {
         }
         else if(level == 3){
             
-            //playerOne = new Player(offsetX + 90, offsetY + 100, 45 * scaleX, 90 * scaleY, 1);
-            //playerTwo = new Player(offsetX + 1830, offsetY + 100, 45 * scaleX, 90 * scaleY, 2);
+            playerOne = new Player(offsetX + 90 * scaleX, offsetY + 100 * scaleX, 45 * scaleX, 90 * scaleY, 1, p1Left, p1Right, p1SlideLeft, p1SlideRight, p1Dead);
+            playerTwo = new Player(offsetX + 1830 * scaleX, offsetY + 100 * scaleX, 45 * scaleX, 90 * scaleY, 2, p2Left, p2Right, p2SlideLeft, p2SlideRight, p2Dead);
 
-            walls.add(new Wall(250,800,1350,15));
-            walls.add(new Wall(950,685,15,130));
-            walls.add(new Wall(400,650,350,15));
-            walls.add(new Wall(1150,650,350,15));
-            walls.add(new Wall(840,500,250,15));
-            walls.add(new Wall(0,965,160,15));
-            walls.add(new Wall(1760,965,160,15));
+            walls.add(new Wall(offsetX + 250 * scaleX, offsetY + 800 * scaleY, 1350 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 950 * scaleX, offsetY + 685 * scaleY, 15 * scaleX, 130 * scaleY));
+            walls.add(new Wall(offsetX + 400 * scaleX, offsetY + 650 * scaleY, 350 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 1150 * scaleX, offsetY + 650 * scaleY, 350 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 840 * scaleX, offsetY + 500 * scaleY, 250 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 0 * scaleX, offsetY + 965 * scaleY, 160 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 1760 * scaleX, offsetY + 965 * scaleY, 160 * scaleX, 15 * scaleY));
         }
         else if(level == 4){
-            //playerOne = new Player(90, 100, 45, 90, 1);
-            //playerTwo = new Player(window.getWidth() - 90, 100, 45, 90, 2);
+            playerOne = new Player(offsetX + 90 * scaleX, offsetY + 100 * scaleX, 45 * scaleX, 90 * scaleY, 1, p1Left, p1Right, p1SlideLeft, p1SlideRight, p1Dead);
+            playerTwo = new Player(offsetX + 1830 * scaleX, offsetY + 100 * scaleX, 45 * scaleX, 90 * scaleY, 2, p2Left, p2Right, p2SlideLeft, p2SlideRight, p2Dead);
 
-            walls.add(new Wall(100,590,770,15));
-            walls.add(new Wall(1025,590,770,15));
-            walls.add(new Wall(0,200,150,15));
-            walls.add(new Wall(1770,200,150,15));
-            walls.add(new Wall(950,0,15,200));
-            walls.add(new Wall(660,300,600,15));
-            walls.add(new Wall(500,150,15,200));
-            walls.add(new Wall(300,300,15,200));
-            walls.add(new Wall(825,500,250,15));
-            walls.add(new Wall(450,450,250,15));
-            walls.add(new Wall(1250,450,250,15));
-            walls.add(new Wall(1400,150,15,200));
-            walls.add(new Wall(1650,300,15,200));
-            walls.add(new Wall(300,150,100,15));
-            walls.add(new Wall(1500,150,100,15));
-            walls.add(new Wall(200,300,15,200));
-            walls.add(new Wall(1750,300,15,200));
-            walls.add(new Wall(0,700,250,15));
-            walls.add(new Wall(1650,700,350,15));
-            walls.add(new Wall(350,700,15,200));
-            walls.add(new Wall(1520,700,15,200));
-            walls.add(new Wall(80,850,200,15));
-            walls.add(new Wall(1610,850,200,15));
-            walls.add(new Wall(500,700,900,15));
-            walls.add(new Wall(450,900,15,100));
-            walls.add(new Wall(450,900,1000,15));
-            walls.add(new Wall(1450,900,15,100));
-            walls.add(new Wall(950,800,15,200));    
+            walls.add(new Wall(offsetX + 100 * scaleX, offsetY + 590 * scaleY, 770 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 1025 * scaleX, offsetY + 590 * scaleY, 770 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 0 * scaleX, offsetY + 200 * scaleY, 150 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 1770 * scaleX, offsetY + 200 * scaleY, 150 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 950 * scaleX, offsetY + 0 * scaleY, 15 * scaleX, 200 * scaleY));
+            walls.add(new Wall(offsetX + 660 * scaleX, offsetY + 300 * scaleY, 600 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 500 * scaleX, offsetY + 150 * scaleY, 15 * scaleX, 200 * scaleY));
+            walls.add(new Wall(offsetX + 300 * scaleX, offsetY + 300 * scaleY, 15 * scaleX, 200 * scaleY));
+            walls.add(new Wall(offsetX + 825 * scaleX, offsetY + 500 * scaleY, 250 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 450 * scaleX, offsetY + 450 * scaleY, 250 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 1250 * scaleX, offsetY + 450 * scaleY, 250 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 1400 * scaleX, offsetY + 150 * scaleY, 15 * scaleX, 200 * scaleY));
+            walls.add(new Wall(offsetX + 1650 * scaleX, offsetY + 300 * scaleY, 15 * scaleX, 200 * scaleY));
+            walls.add(new Wall(offsetX + 300 * scaleX, offsetY + 150 * scaleY, 100 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 1500 * scaleX, offsetY + 150 * scaleY, 100 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 200 * scaleX, offsetY + 300 * scaleY, 15 * scaleX, 200 * scaleY));
+            walls.add(new Wall(offsetX + 1750 * scaleX, offsetY + 300 * scaleY, 15 * scaleX, 200 * scaleY));
+            walls.add(new Wall(offsetX + 0 * scaleX, offsetY + 700 * scaleY, 250 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 1650 * scaleX, offsetY + 700 * scaleY, 350 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 350 * scaleX, offsetY + 700 * scaleY, 15 * scaleX, 200 * scaleY));
+            walls.add(new Wall(offsetX + 1520 * scaleX, offsetY + 700 * scaleY, 15 * scaleX, 200 * scaleY));
+            walls.add(new Wall(offsetX + 80 * scaleX, offsetY + 850 * scaleY, 200 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 1610 * scaleX, offsetY + 850 * scaleY, 200 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 500 * scaleX, offsetY + 700 * scaleY, 900 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 450 * scaleX, offsetY + 900 * scaleY, 15 * scaleX, 100 * scaleY));
+            walls.add(new Wall(offsetX + 450 * scaleX, offsetY + 900 * scaleY, 1000 * scaleX, 15 * scaleY));
+            walls.add(new Wall(offsetX + 1450 * scaleX, offsetY + 900 * scaleY, 15 * scaleX, 100 * scaleY));
+            walls.add(new Wall(offsetX + 950 * scaleX, offsetY + 800 * scaleY, 15 * scaleX, 200 * scaleY)); 
         }
         
         
