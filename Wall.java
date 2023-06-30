@@ -5,6 +5,7 @@ public class Wall{
     private double sizeX, sizeY;
     private double[] hitBox;
     private Color color;
+    
 
     public Wall(double x, double y, double sizeX, double sizeY){
         this.x = x;
