@@ -13,14 +13,14 @@ import java.util.ArrayList;
 
 public class Shootout extends JPanel {
     private static boolean gameState;
-    //static GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
+    static GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
     public static void main(String[] args) throws InterruptedException, UnsupportedAudioFileException, IOException, LineUnavailableException {
 		JFrame win = new JFrame();
 		win.setResizable(true);
 		win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        //win.setUndecorated(true);
+        win.setUndecorated(true);
         win.setSize(500, 500);
-        //device.setFullScreenWindow(win);
+        device.setFullScreenWindow(win);
 		win.setTitle("Shooter Game - Julian");
 		Shootout game = new Shootout(win);
 		win.add(game);
@@ -81,7 +81,6 @@ public class Shootout extends JPanel {
         window = win;
 		setSize(window.getWidth(), window.getHeight());
 		setBackground(new Color(200, 200, 200));
-        //frameRate(60);
         screen = 1;
 
         try {
@@ -301,8 +300,6 @@ public class Shootout extends JPanel {
             else if(playerTwo.onRWall && !playerTwo.onGround){
                 playerTwo.setSprite("slideRight");
             }
-
-            
             playerTwo.update(this);
             playerTwo.paint(g, window);
             
@@ -391,10 +388,10 @@ public class Shootout extends JPanel {
         level = (int)(Math.random() * 3) + 1;
 
         walls = new ArrayList<Wall>();
-        // walls.add(new Wall(0, window.getHeight() - 50, window.getWidth(), 50));
-        // walls.add(new Wall(0, 0, 15, window.getHeight()));
-        // walls.add(new Wall(window.getWidth() - 15, 0, 15, window.getHeight()));
-        // walls.add(new Wall(0, 0, window.getWidth(), 15));
+        walls.add(new Wall(0, window.getHeight() - 50, window.getWidth(), 50));
+        walls.add(new Wall(0, 0, 15, window.getHeight()));
+        walls.add(new Wall(window.getWidth() - 15, 0, 15, window.getHeight()));
+        walls.add(new Wall(0, 0, window.getWidth(), 15));
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double screenWidth = screenSize.getWidth();
