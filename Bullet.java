@@ -6,6 +6,9 @@ public class Bullet{
     private double[] hitBox;
     public int xDirection;
     public int yDirection;
+    private double lastFrameTime;
+    private double frameRate;
+    private long currentTime;
     public double speed;
     public int bounces;
 
@@ -20,6 +23,7 @@ public class Bullet{
         yDirection = 0;
         speed = 20;
         bounces = 0;
+        currentTime = System.nanoTime();
     }
 
     public void paint(Graphics g, int num){
@@ -33,8 +37,13 @@ public class Bullet{
     }
 
     public void update(Shootout game, int num){
-        hitBox[0] += speed * Math.signum(xDirection);
-        hitBox[1] += speed * Math.signum(yDirection);
+        currentTime = System.nanoTime();
+        frameRate = 1000000000.0 / (currentTime - lastFrameTime);
+        lastFrameTime = currentTime;
+        if(frameRate > 1){  
+            hitBox[0] += (speed / frameRate) * Math.signum(xDirection) * 50;
+            hitBox[1] += (speed / frameRate) * Math.signum(yDirection) * 50;
+        }
         for(Wall w : game.walls){
             if(w.intersects(hitBox[0], hitBox[1], hitBox[2], hitBox[3])){
                 hitBox[0] -= speed * Math.signum(xDirection);
