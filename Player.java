@@ -32,6 +32,7 @@ public class Player{
        
     private double lastFrameTime;
     private double frameRate;
+    private double frameTime;
     private long currentTime;
 
     private Clip shot;
@@ -56,7 +57,8 @@ public class Player{
         this.slideRight = slideRight;
         this.dead = dead;
         currentTime = System.nanoTime();
-        speedMultiplier = .8 * 50;
+        speedMultiplier = .8 * 100;
+        frameRate = .01;
 
        
 
@@ -111,9 +113,11 @@ public class Player{
 
     public void update(Shootout game){
         currentTime = System.nanoTime();
-        frameRate = 1;//000000000.0 / (currentTime - lastFrameTime);
+        frameTime = (currentTime - lastFrameTime) / 1000000000.0;//000000000.0 / (currentTime - lastFrameTime);
+        frameRate = .01;
         lastFrameTime = currentTime;
-        if(frameRate < 1) frameRate = 1;
+        if(frameTime == 0) frameTime = .01;
+        else if(frameTime > 100) frameTime = .01;
         onLWall = false;
         onRWall = false;
         onGround = false;
@@ -142,26 +146,26 @@ public class Player{
 
 
         //If not moving or trying to move in the opposite direction facing, slow the player down quickly
-        if((keyLeft && keyRight) || (!keyLeft && !keyRight) || (keyLeft && !keyRight && velocity[0] > 0) || (!keyLeft && keyRight && velocity[0] < 0)) velocity[0] *= 0.7;
+        if((keyLeft && keyRight) || (!keyLeft && !keyRight) || (keyLeft && !keyRight && velocity[0] > 0) || (!keyLeft && keyRight && velocity[0] < 0)) velocity[0] *= 0.7 * speedMultiplier * frameRate;
         //Otherwise move the player
         else if(keyLeft && !keyRight){
             //directionFacing = -1;
 
             //Player moves faster if they are on the ground
             if(onGround){
-                velocity[0] -= (0.6 * speedMultiplier / frameRate);
+                velocity[0] -= (0.6 * speedMultiplier * frameRate);
             }
             else{
-                velocity[0] -= (0.2 * speedMultiplier / frameRate); 
+                velocity[0] -= (0.2 * speedMultiplier * frameRate); 
             }
         }
         else if(!keyLeft && keyRight){
             //directionFacing = 1;
             if(onGround){
-                velocity[0] += (0.6 * speedMultiplier / frameRate);
+                velocity[0] += (0.6 * speedMultiplier * frameRate);
             }
             else{
-                velocity[0] += (0.2 * speedMultiplier / frameRate); 
+                velocity[0] += (0.2 * speedMultiplier * frameRate); 
             }
         }
 
@@ -173,17 +177,18 @@ public class Player{
         
 
         //Vertical max speed
-        if(velocity[1] >= 8) velocity[1] = 8;
+        if(velocity[1] >= 13 * speedMultiplier * frameRate) velocity[1] = 13 * speedMultiplier * frameRate;
+        else if(velocity[1] <= -13) velocity[1] = -13 * speedMultiplier * frameRate;
 
         //Jump
         if(keyUp){
-            if(onGround) velocity[1] =(-13 * speedMultiplier / frameRate);
+            if(onGround) velocity[1] =(-13 * speedMultiplier * frameRate);
             else if(onLWall && !onRWall && keyRight && lastWallJumpDirection != 1) {
-                velocity[1] = (-13 * speedMultiplier / frameRate); 
+                velocity[1] = (-13 * speedMultiplier * frameRate); 
                 lastWallJumpDirection = 1;
             }
             else if(!onLWall && onRWall && keyLeft && lastWallJumpDirection != -1){
-                velocity[1] =(-13 * speedMultiplier / frameRate); 
+                velocity[1] =(-13 * speedMultiplier * frameRate); 
                 lastWallJumpDirection = -1;
             }
         }
@@ -192,13 +197,13 @@ public class Player{
         //Gravity
         if((onLWall || onRWall) && velocity[1] >= 0){
             //Set new Verticle max speed if on a wall
-            if(Math.abs(velocity[1]) >= 2.6) velocity[1] = 2.6 * Math.signum(velocity[1]);
-            velocity[1] += (0.1 * speedMultiplier / frameRate);
+            if(Math.abs(velocity[1]) >= 2.6 * speedMultiplier * frameRate) velocity[1] = 2.6 * speedMultiplier * frameRate * Math.signum(velocity[1]);
+            velocity[1] += (0.1 * speedMultiplier * frameRate);
         }
         else{
             //Added the if else so you can set a different fall gravity than jump gravity  
-            if(velocity[1] <= 0) velocity[1] += (0.4 * speedMultiplier / frameRate);
-            else if(velocity[1] > 0) velocity[1] += (0.4 * speedMultiplier / frameRate);   
+            if(velocity[1] <= 0) velocity[1] += (0.4 * speedMultiplier * frameRate);
+            else if(velocity[1] > 0) velocity[1] += (0.4 * speedMultiplier * frameRate);   
         }
 
         
@@ -247,7 +252,8 @@ public class Player{
             }
         }
         else{
-            if(frameRate > 1) shootCoolTimer -= 1 / frameRate;
+            System.out.println(shootCoolTimer);
+            if(frameTime != 0 && frameTime < 1) shootCoolTimer -= 1 * frameTime;
             if(shootCoolTimer <= 0){
                 onCooldown = false;
             }
@@ -283,25 +289,25 @@ public class Player{
 
         if(num == 1){
             if(onLWall && !onRWall && !onGround){
-              game.p1Bullets.add(new Bullet(x - 10, y + 28, 1));
+              game.p1Bullets.add(new Bullet(x - 6, y + 28, 1));
             }
             else if(!onLWall && onRWall && !onGround){
-              game.p1Bullets.add(new Bullet(x + 10, y + 28, -1));
+              game.p1Bullets.add(new Bullet(x + 6, y + 28, -1));
             }
             else{
-                game.p1Bullets.add(new Bullet(x - 10 * Math.signum(directionFacing), y + 28, directionFacing));
+                game.p1Bullets.add(new Bullet(x - 6 * Math.signum(directionFacing), y + 28, directionFacing));
             }
 
         }
         else if(num == 2){
             if(onLWall && !onRWall && !onGround){
-                game.p2Bullets.add(new Bullet(x - 10, y + 28, 1));
+                game.p2Bullets.add(new Bullet(x - 6, y + 28, 1));
             }
             else if(!onLWall && onRWall && !onGround){
-                game.p2Bullets.add(new Bullet(x + 10, y + 28, -1));
+                game.p2Bullets.add(new Bullet(x + 6, y + 28, -1));
             }
             else{
-                game.p2Bullets.add(new Bullet(x - 10 * Math.signum(directionFacing), y + 28, directionFacing));
+                game.p2Bullets.add(new Bullet(x - 6 * Math.signum(directionFacing), y + 28, directionFacing));
             }
         }
     }
