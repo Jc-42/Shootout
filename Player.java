@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -30,8 +29,6 @@ public class Player{
     public boolean onLWall = false;
     public boolean onRWall = false;
 
-    private File file;
-    private AudioInputStream audioStream;
     private Clip shot;
 
     
@@ -174,13 +171,13 @@ public class Player{
 
         //Jump
         if(keyUp){
-            if(onGround) velocity[1] = -10;
+            if(onGround) velocity[1] = -12;
             else if(onLWall && !onRWall && keyRight && lastWallJumpDirection != 1) {
-                velocity[1] = -10; 
+                velocity[1] = -12; 
                 lastWallJumpDirection = 1;
             }
             else if(!onLWall && onRWall && keyLeft && lastWallJumpDirection != -1){
-                velocity[1] = -10; 
+                velocity[1] = -12; 
                 lastWallJumpDirection = -1;
             }
         }
@@ -224,16 +221,11 @@ public class Player{
             }
         }
         
-        currentTime = System.nanoTime();
-        frameRate = 1000000000.0 / (currentTime - lastFrameTime);
-        lastFrameTime = currentTime;
-        if(frameRate > 1){  
-            x += (velocity[0] / frameRate) * 50;
-            y += (velocity[1] / frameRate) * 50;
+        
+            x += velocity[0] / 2.6;
+            y += velocity[1] / 2.6;
             hitBox[0] = x;
             hitBox[1] = y;
-        }
-        
 
 
         if(!onCooldown){
