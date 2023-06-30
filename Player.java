@@ -34,6 +34,11 @@ public class Player{
     private AudioInputStream audioStream;
     private Clip shot;
 
+    
+    private double lastFrameTime;
+    private double frameRate;
+    private long currentTime;
+
     public Player(double x, double y, double sizeX, double sizeY, int num, Image left, Image right, Image slideLeft, Image slideRight,Image dead) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
         this.x = x;
         this.y = y;
@@ -50,6 +55,7 @@ public class Player{
         this.slideLeft = slideLeft;
         this.slideRight = slideRight;
         this.dead = dead;
+        currentTime = System.nanoTime();
         
 
        
@@ -168,13 +174,13 @@ public class Player{
 
         //Jump
         if(keyUp){
-            if(onGround) velocity[1] = -13;
+            if(onGround) velocity[1] = -10;
             else if(onLWall && !onRWall && keyRight && lastWallJumpDirection != 1) {
-                velocity[1] = -13; 
+                velocity[1] = -10; 
                 lastWallJumpDirection = 1;
             }
             else if(!onLWall && onRWall && keyLeft && lastWallJumpDirection != -1){
-                velocity[1] = -13; 
+                velocity[1] = -10; 
                 lastWallJumpDirection = -1;
             }
         }
@@ -184,10 +190,10 @@ public class Player{
         if((onLWall || onRWall) && velocity[1] >= 0){
             //Set new Verticle max speed if on a wall
             if(Math.abs(velocity[1]) >= 2.6) velocity[1] = 2.6 * Math.signum(velocity[1]);
-            velocity[1] += .2;
+            velocity[1] += .1;
         }
         else{
-            velocity[1] += .5;
+            velocity[1] += .3;
         }
 
         
@@ -218,11 +224,15 @@ public class Player{
             }
         }
         
-
-        x += velocity[0];
-        y += velocity[1];
-        hitBox[0] = x;
-        hitBox[1] = y;
+        currentTime = System.nanoTime();
+        frameRate = 1000000000.0 / (currentTime - lastFrameTime);
+        lastFrameTime = currentTime;
+        if(frameRate > 1){  
+            x += (velocity[0] / frameRate) * 50;
+            y += (velocity[1] / frameRate) * 50;
+            hitBox[0] = x;
+            hitBox[1] = y;
+        }
         
 
 
