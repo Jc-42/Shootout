@@ -29,12 +29,15 @@ public class Player{
     public boolean onLWall = false;
     public boolean onRWall = false;
 
-    private Clip shot;
-
-    
+       
     private double lastFrameTime;
     private double frameRate;
     private long currentTime;
+
+    private Clip shot;
+    private double speedMultiplier;
+
+ 
 
     public Player(double x, double y, double sizeX, double sizeY, int num, Image left, Image right, Image slideLeft, Image slideRight,Image dead) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
         this.x = x;
@@ -53,7 +56,7 @@ public class Player{
         this.slideRight = slideRight;
         this.dead = dead;
         currentTime = System.nanoTime();
-        
+        speedMultiplier = .8 * 50;
 
        
 
@@ -107,7 +110,10 @@ public class Player{
     }
 
     public void update(Shootout game){
-        
+        currentTime = System.nanoTime();
+        frameRate = 1;//000000000.0 / (currentTime - lastFrameTime);
+        lastFrameTime = currentTime;
+        if(frameRate < 1) frameRate = 1;
         onLWall = false;
         onRWall = false;
         onGround = false;
@@ -143,19 +149,19 @@ public class Player{
 
             //Player moves faster if they are on the ground
             if(onGround){
-                velocity[0] -= 0.6;
+                velocity[0] -= (0.6 * speedMultiplier / frameRate);
             }
             else{
-                velocity[0] -= 0.2; 
+                velocity[0] -= (0.2 * speedMultiplier / frameRate); 
             }
         }
         else if(!keyLeft && keyRight){
             //directionFacing = 1;
             if(onGround){
-                velocity[0] += 0.6;
+                velocity[0] += (0.6 * speedMultiplier / frameRate);
             }
             else{
-                velocity[0] += 0.2; 
+                velocity[0] += (0.2 * speedMultiplier / frameRate); 
             }
         }
 
@@ -167,17 +173,17 @@ public class Player{
         
 
         //Vertical max speed
-        if(Math.abs(velocity[1]) >= 13) velocity[1] = 13 * Math.signum(velocity[1]);
+        if(velocity[1] >= 8) velocity[1] = 8;
 
         //Jump
         if(keyUp){
-            if(onGround) velocity[1] = -12;
+            if(onGround) velocity[1] =(-13 * speedMultiplier / frameRate);
             else if(onLWall && !onRWall && keyRight && lastWallJumpDirection != 1) {
-                velocity[1] = -12; 
+                velocity[1] = (-13 * speedMultiplier / frameRate); 
                 lastWallJumpDirection = 1;
             }
             else if(!onLWall && onRWall && keyLeft && lastWallJumpDirection != -1){
-                velocity[1] = -12; 
+                velocity[1] =(-13 * speedMultiplier / frameRate); 
                 lastWallJumpDirection = -1;
             }
         }
@@ -187,10 +193,12 @@ public class Player{
         if((onLWall || onRWall) && velocity[1] >= 0){
             //Set new Verticle max speed if on a wall
             if(Math.abs(velocity[1]) >= 2.6) velocity[1] = 2.6 * Math.signum(velocity[1]);
-            velocity[1] += .1;
+            velocity[1] += (0.1 * speedMultiplier / frameRate);
         }
         else{
-            velocity[1] += .3;
+            //Added the if else so you can set a different fall gravity than jump gravity  
+            if(velocity[1] <= 0) velocity[1] += (0.4 * speedMultiplier / frameRate);
+            else if(velocity[1] > 0) velocity[1] += (0.4 * speedMultiplier / frameRate);   
         }
 
         
@@ -222,8 +230,8 @@ public class Player{
         }
         
         
-            x += velocity[0] / 2.6;
-            y += velocity[1] / 2.6;
+            x += velocity[0];
+            y += velocity[1];
             hitBox[0] = x;
             hitBox[1] = y;
 
@@ -239,7 +247,7 @@ public class Player{
             }
         }
         else{
-            shootCoolTimer -= .05; //frameRate;
+            if(frameRate > 1) shootCoolTimer -= 1 / frameRate;
             if(shootCoolTimer <= 0){
                 onCooldown = false;
             }
