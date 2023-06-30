@@ -32,7 +32,7 @@ public class Player{
        
     private double lastFrameTime;
     private double frameRate;
-    private double frameTime;
+    public double frameTime;
     private long currentTime;
 
     private Clip shot;
@@ -57,8 +57,9 @@ public class Player{
         this.slideRight = slideRight;
         this.dead = dead;
         currentTime = System.nanoTime();
-        speedMultiplier = .8 * 100;
+        speedMultiplier = .8 * 80;
         frameRate = .01;
+        setFile(".//data//usGunshot.wav");
 
        
 
@@ -88,7 +89,7 @@ public class Player{
     }
 
     public void play(){
-        shot.setFramePosition(0);
+        //shot.setFramePosition(0);
         shot.start();
     }
 
@@ -105,6 +106,7 @@ public class Player{
         else if(num == 2){
             g.drawImage(activeSprite, (int)x - (int)(sizeX * 2) / 4, (int)y,(int)(sizeX * 2.2), (int)sizeY, window);
         }
+
        
 
         //Show Hitbox
@@ -112,6 +114,10 @@ public class Player{
     }
 
     public void update(Shootout game){
+        if(!shot.isActive()){
+            System.out.println("sss");
+            shot.close();
+        }
         currentTime = System.nanoTime();
         frameTime = (currentTime - lastFrameTime) / 1000000000.0;//000000000.0 / (currentTime - lastFrameTime);
         frameRate = .01;
@@ -252,7 +258,6 @@ public class Player{
             }
         }
         else{
-            System.out.println(shootCoolTimer);
             if(frameTime != 0 && frameTime < 1) shootCoolTimer -= 1 * frameTime;
             if(shootCoolTimer <= 0){
                 onCooldown = false;

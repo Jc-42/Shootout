@@ -15,30 +15,43 @@ public class Shootout extends JPanel {
     private static boolean gameState;
     static GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
     public static void main(String[] args) throws InterruptedException, UnsupportedAudioFileException, IOException, LineUnavailableException {
-		JFrame win = new JFrame();
-		win.setResizable(true);
-		win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        JFrame win = new JFrame();
+        win.setResizable(true);
+        win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         win.setUndecorated(true);
         win.setSize(500, 500);
         device.setFullScreenWindow(win);
-		win.setTitle("Shooter Game - Julian");
-		Shootout game = new Shootout(win);
-		win.add(game);
-		game.setFocusable(true);
-		win.setVisible(true);
-		win.setFocusable(true);
-        
-	    // game loop
-		gameState = true;
+        win.setTitle("Shooter Game - Julian");
+        Shootout game = new Shootout(win);
+        win.add(game);
+        game.setFocusable(true);
+        win.setVisible(true);
+        win.setFocusable(true);
 
-		while(gameState == true){
-			
-			Thread.sleep(10);
-			game.repaint();
-		}
+        // frame rate capping
+        double interpolation = 0;
+        final int TICKS_PER_SECOND = 60;
+        final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+        final int MAX_FRAMESKIP = 5;
+        double next_game_tick = System.currentTimeMillis();
+        int loops;
 
-		game.repaint();
-	}
+        // game loop
+        gameState = true;
+
+        while(gameState){
+            loops = 0;
+            while (System.currentTimeMillis() > next_game_tick && loops < MAX_FRAMESKIP) {
+                game.repaint(); // assuming you have an update method in your game class
+
+                next_game_tick += SKIP_TICKS;
+                loops++;
+            }
+
+            interpolation = (System.currentTimeMillis() + SKIP_TICKS - next_game_tick) / (double) SKIP_TICKS;
+            
+        }
+}
 
     private JFrame window;
     public Player playerOne;
@@ -326,6 +339,8 @@ public class Shootout extends JPanel {
             if(playerOne.health <= 0 || playerTwo.health <= 0){
                 gameOver = true;
             }
+            g.setFont(new Font("Arial", Font.PLAIN, 40));
+            g.drawString("FPS: " + (int)(1 / playerOne.frameTime), 90, 90);
         }
         else{
             
